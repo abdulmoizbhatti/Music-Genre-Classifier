@@ -15,15 +15,14 @@ def setup_environment():
     """Create necessary directories for the project."""
     directories = [
         "data/raw",
-        "data/processed", 
-        "models/trained",
-        "models/results",
+        "data/processed",
+        "models",
         "notebooks"
     ]
     
     for directory in directories:
         Path(directory).mkdir(parents=True, exist_ok=True)
-        print(f"✓ Created directory: {directory}")
+        print(f"Created directory: {directory}")
 
 
 def run_feature_extraction(data_dir: str = "data/raw", output_path: str = "data/processed/features.csv"):
@@ -119,10 +118,10 @@ def main():
         
         # Check what data is available
         if os.path.exists("data/processed/features.csv"):
-            print("\n✓ Custom-extracted features found. You can run training with:")
+            print("\n Custom-extracted features found. You can run training with:")
             print("  python main.py --train")
         elif os.path.exists("data/raw/Data/features_30_sec.csv"):
-            print("\n✓ Pre-extracted features found. You can run training with:")
+            print("\n Pre-extracted features found. You can run training with:")
             print("  python main.py --train")
         else:
             print("\nNo features found. Please add audio files and run:")

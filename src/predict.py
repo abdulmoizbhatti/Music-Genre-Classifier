@@ -96,10 +96,8 @@ def main():
         for i, row in results.iterrows():
             actual = row.get('label', 'Unknown')
             predicted = row['predicted_genre']
-            filename = row.get('filename', f'Sample {i+1}')
-            
-            status = "✓" if actual == predicted else "✗"
-            print(f"{status} {filename}")
+            sample_num = f"Sample {i+1}"
+            print(f"{sample_num}")
             print(f"   Actual: {actual}")
             print(f"   Predicted: {predicted}")
             print()
