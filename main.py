@@ -62,14 +62,14 @@ def run_feature_extraction(data_dir: str = "data/raw", output_path: str = "data/
         return False
 
 
-def run_training():
+def run_training(model_type="random_forest"):
     """Run the model training pipeline using unified data processing."""
     print("\n" + "="*60)
     print("MODEL TRAINING")
     print("="*60)
     
     try:
-        train_models()
+        train_models(model_type)
         print("Model training completed successfully!")
         return True
     except Exception as e:
@@ -84,6 +84,7 @@ def main():
     parser.add_argument("--train", action="store_true", help="Train models")
     parser.add_argument("--full", action = "store_true", help="Run complete pipeline")
     parser.add_argument("--data-dir", default="data/raw", help="Directory containing audio files")
+    parser.add_argument("--model", default="random_forest", choices=["random_forest", "cnn", "mlp"], help="Model type to use: random_forest, cnn, or mlp")
     
     args = parser.parse_args()
     
@@ -102,7 +103,7 @@ def main():
     
     # Run training
     if args.train or args.full:
-        success = run_training()
+        success = run_training(args.model)
         if not success:
             print("\nTraining failed. Check your data files.")
             return

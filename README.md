@@ -1,6 +1,6 @@
 # Music Genre Classifier
 
-This project is about building a system that can tell what genre a piece of music belongs to just by analyzing its audio. By extracting features like tempo, spectral properties, and MFCCs from songs, I trained machine learning models to recognize patterns for different genres. You can either use the provided pre-extracted features for quick results, or extract your own features from new audio files to experiment and learn more about how music classification works.
+This project is about building a system that can tell what genre a piece of music belongs to just by analyzing its audio. By extracting features like tempo, spectral properties, and MFCCs from songs, I trained both machine learning and deep learning (MLP) models to recognize patterns for different genres. You can either use the provided pre-extracted features for quick results, or extract your own features from new audio files to experiment and learn more about how music classification works.
 
 You can see some results and visualizations from the project in the Results section below.
 
@@ -26,6 +26,10 @@ You can see some results and visualizations from the project in the Results sect
      ```bash
      python src/predict.py
      ```
+  4. **Train and evaluate a deep learning model (MLP)**
+     ```bash
+     python main.py --train --model mlp
+     ```
 
 ---
 
@@ -50,8 +54,13 @@ You can see some results and visualizations from the project in the Results sect
      ```bash
      python src/predict.py
      ```
+  5. **Train and evaluate a deep learning model (MLP)**
+     ```bash
+     python main.py --train --model mlp
+     ```
 
-- Use `python main.py --full` to run extraction and training in one step for custom audio.
+**Tip:**
+- Use `python main.py --full` to run extraction and training in one step for custom audio (Random Forest only by default; for MLP, run the train step with `--model mlp`).
 
 ---
 
@@ -144,4 +153,42 @@ Classification Report:
     accuracy                           0.70       200
    macro avg       0.71      0.70      0.70       200
 weighted avg       0.71      0.70      0.70       200
+```
+
+### Deep Learning (MLP) Results
+
+- **Accuracy:** ~91%
+
+### Confusion Matrix (MLP):
+
+![Confusion Matrix (MLP)](images/confusion_matrix_mlp.png)
+
+### Predicted Genre Distribution (MLP):
+
+![Predicted Genre Distribution (MLP)](images/predicted_genre_distribution_mlp.png)
+
+### Actual vs. Predicted Genre Distribution (MLP):
+
+![Actual vs. Predicted Genre Distribution (MLP)](images/actual_vs_predicted_genre_distribution_mlp.png)
+
+### Classification Report (MLP):
+
+```
+Classification Report (MLP):
+              precision    recall  f1-score   support
+
+       blues       0.95      0.95      0.95        22
+   classical       1.00      0.96      0.98        28
+     country       0.78      0.95      0.86        22
+       disco       0.88      0.92      0.90        24
+      hiphop       0.94      0.85      0.89        20
+        jazz       0.89      0.84      0.86        19
+       metal       1.00      1.00      1.00        12
+         pop       0.89      0.81      0.85        21
+      reggae       0.82      0.93      0.88        15
+        rock       0.93      0.82      0.88        17
+
+    accuracy                           0.91       200
+   macro avg       0.91      0.90      0.91       200
+weighted avg       0.91      0.91      0.91       200
 ```

@@ -56,6 +56,8 @@ models/*.pkl
 models/*.png
 models/*.jpg
 models/*.jpeg
+models/*.h5
+models/*.keras 
 
 # Temporary files
 *.tmp

@@ -322,6 +322,48 @@ class ModelEnsemble:
             raise ValueError("Method must be 'voting' or 'averaging'")
 
 
+class MLPGenreClassifier(GenreClassifier):
+    """Feedforward neural network (MLP) for genre classification using tabular features."""
+    def __init__(self, input_dim: int, num_classes: int = 10):
+        super().__init__("MLP")
+        self.input_dim = input_dim
+        self.num_classes = num_classes
+        self.model = self._build_model()
+
+    def _build_model(self):
+        model = models.Sequential([
+            layers.Input(shape=(self.input_dim,)),
+            layers.Dense(128, activation='relu'),
+            layers.Dropout(0.3),
+            layers.Dense(64, activation='relu'),
+            layers.Dropout(0.3),
+            layers.Dense(self.num_classes, activation='softmax')
+        ])
+        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        return model
+
+    def fit(self, X: np.ndarray, y: np.ndarray, epochs: int = 20, batch_size: int = 32, validation_split: float = 0.2):
+        print("Fitting MLP classifier:")
+        start_time = time.time()
+        # Scale features
+        X_scaled = self.scaler.fit_transform(X)
+        # Encode labels
+        y_encoded = self.label_encoder.fit_transform(y)
+        y_categorical = to_categorical(y_encoded, num_classes=self.num_classes)
+        self.model.fit(X_scaled, y_categorical, epochs=epochs, batch_size=batch_size, validation_split=validation_split, verbose=1)
+        self.is_fitted = True
+        training_time = time.time() - start_time
+        print(f"MLP training completed in {training_time:.2f} seconds")
+        return self
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        if not self.is_fitted:
+            raise ValueError("Model must be fitted before making predictions")
+        X_scaled = self.scaler.transform(X)
+        predictions = self.model.predict(X_scaled)
+        return self.label_encoder.inverse_transform(np.argmax(predictions, axis=1))
+
+
 def create_models() -> Dict[str, GenreClassifier]:
     """Create a dictionary of models to train and compare."""
     models = {
@@ -443,7 +485,12 @@ def evaluate_model(model, X_test, y_test):
         Tuple of (accuracy, classification_report, confusion_matrix)
     """
     # Make predictions
-    y_pred_num = model.model.predict(X_test)
+    y_pred_raw = model.model.predict(X_test)
+    # If output is probabilities (Keras), convert to class indices
+    if len(y_pred_raw.shape) > 1 and y_pred_raw.shape[1] > 1:
+        y_pred_num = np.argmax(y_pred_raw, axis=1)
+    else:
+        y_pred_num = y_pred_raw
     # Decode predictions to string labels if label_encoder exists
     if hasattr(model, 'label_encoder') and hasattr(model.label_encoder, 'inverse_transform'):
         y_pred = model.label_encoder.inverse_transform(y_pred_num)
